@@ -1,46 +1,47 @@
--- List of map names and corresponding script URLs
 local mapScripts = {
-    ["Dungeon Mini Game"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/main/11468075017",
-    ["Mugen"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/main/11468034852",
-    ["Map 1 Public"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/main/17387475546",
-    ["Map 1 Private"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/main/13883279773",
-    ["Map 2 Public"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/main/17387482786",
-    ["Map 2 Private"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/main/13883059853"
+    ["mugen"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub/refs/heads/main/11468034852",
+    ["ouwighara"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub/refs/heads/main/11468075017",
+    ["map2priv"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub/refs/heads/main/13883059853",
+    ["map1private"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub/refs/heads/main/13883279773",
+    ["map1public"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub/refs/heads/main/17387475546",
+    ["map2public"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub/refs/heads/main/17387482786",
 }
 
--- Function to get the current map name (make sure to adjust this depending on your game structure)
+-- Function to detect the current map
 local function getCurrentMap()
-    -- Replace this with your actual logic to get the map's name
-    -- For example, check the name of the map or any identifier in your game
-    if game.Workspace:FindFirstChild("Map") then
-        return game.Workspace.Map.Name
-    else
-        return "Unknown Map"
+    for _, v in pairs(game.Workspace:GetChildren()) do
+        print("Checking map: " .. v.Name)  -- Debugging output
+        if mapScripts[v.Name] then
+            print("Map found: " .. v.Name)  -- Debugging output
+            return v.Name
+        end
     end
+    return nil
 end
 
--- Load the script for the current map
-local function loadMapScript()
-    local currentMap = getCurrentMap()
+-- Function to load and run the script for the current map
+local function loadMapScript(scriptUrl)
+    local success, scriptContent = pcall(function()
+        return game:HttpGet(scriptUrl)
+    end)
     
-    if mapScripts[currentMap] then
-        local scriptUrl = mapScripts[currentMap]
-        
-        -- Fetch the script content
-        local scriptContent = game:HttpGet(scriptUrl)
-        
-        -- Load and run the script
-        local success, result = pcall(function()
+    if success then
+        local success2, err = pcall(function()
             loadstring(scriptContent)()
         end)
         
-        if not success then
-            warn("Error executing the script for map: " .. currentMap .. ". Error: " .. result)
+        if not success2 then
+            warn("Error executing the script: " .. err)
         end
     else
-        warn("No script found for map: " .. currentMap)
+        warn("Failed to fetch script content: " .. scriptContent)
     end
 end
 
--- Run the function to load the correct map script
-loadMapScript()
+-- Load the correct script
+local currentMap = getCurrentMap()
+if currentMap and mapScripts[currentMap] then
+    loadMapScript(mapScripts[currentMap])
+else
+    warn("No script found for this map!")
+end
