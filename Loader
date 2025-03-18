@@ -1,47 +1,27 @@
 local mapScripts = {
-    ["mugen"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/refs/heads/main/11468034852",
-    ["ouwighara"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/refs/heads/main/11468075017",
-    ["map2priv"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/refs/heads/main/13883059853",
-    ["map1private"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/refs/heads/main/13883279773",
-    ["map1public"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/refs/heads/main/17387475546",
-    ["map2public"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/refs/heads/main/17387482786",
+    [11468034852] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/refs/heads/main/11468034852",  -- Mugen
+    [11468075017] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/refs/heads/main/11468075017",  -- Ouwighara
+    [13883059853] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/refs/heads/main/13883059853",  -- Map 2 Private
+    [13883279773] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/refs/heads/main/13883279773",  -- Map 1 Private
+    [17387475546] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/refs/heads/main/17387475546",  -- Map 1 Public
+    [17387482786] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/refs/heads/main/17387482786"   -- Map 2 Public
 }
 
--- Function to detect the current map
-local function getCurrentMap()
-    for _, v in pairs(game.Workspace:GetChildren()) do
-        print("Checking map: " .. v.Name)  -- Debugging output
-        if mapScripts[v.Name] then
-            print("Map found: " .. v.Name)  -- Debugging output
-            return v.Name
-        end
-    end
-    return nil
-end
+-- Get the current map's PlaceId
+local currentPlaceId = game.PlaceId
 
--- Function to load and run the script for the current map
-local function loadMapScript(scriptUrl)
-    local success, scriptContent = pcall(function()
-        return game:HttpGet(scriptUrl)
+-- Check if the PlaceId matches any of the known map scripts
+if mapScripts[currentPlaceId] then
+    print("Loading script for PlaceId: " .. currentPlaceId)  -- Debugging: Show the PlaceId being loaded
+    local success, result = pcall(function()
+        return game:HttpGet(mapScripts[currentPlaceId] .. "?v=" .. tostring(math.random(1000, 9999)), true)
     end)
-    
-    if success then
-        local success2, err = pcall(function()
-            loadstring(scriptContent)()
-        end)
-        
-        if not success2 then
-            warn("Error executing the script: " .. err)
-        end
-    else
-        warn("Failed to fetch script content: " .. scriptContent)
-    end
-end
 
--- Load the correct script
-local currentMap = getCurrentMap()
-if currentMap and mapScripts[currentMap] then
-    loadMapScript(mapScripts[currentMap])
+    if success and result then
+        loadstring(result)()
+    else
+        warn("Failed to load script for PlaceId: " .. currentPlaceId)
+    end
 else
-    warn("No script found for this map!")
+    warn("No script found for this PlaceId!")
 end
