@@ -386,16 +386,6 @@ local tabsettingsgb = UISettings:AddSection({
         Name = "Unload"
 })
 
-	MiscellaneousSection:AddToggle({
-		Name = "Infinite Stamina",
-		Default = false,
-		Save = true,
-		Flag = "infinite_stamina",
-		Callback = function(t)
-			getgenv().InfStamina = t
-		end    
-})
-
 
 
 tabsettingsgb:AddButton({
