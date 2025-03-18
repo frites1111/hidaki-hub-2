@@ -38,6 +38,7 @@ local bossCFrame = {
     ["Tengen"] = CFrame.new(1464, 486, -3118),
     ["Sound Trainee"] = CFrame.new(1897, 663, -2805),
     ["Inosuke"] = CFrame.new(1585, 300, -389),
+    ["Snow Trainee"] = CFrame.new(255.18, 530.94, -2989.45),  -- Added Snow Trainee location
 }
 
 local wbhookrar = {
