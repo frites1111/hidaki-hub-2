@@ -1,0 +1,32 @@
+-- List of map names and corresponding script URLs
+local mapScripts = {
+    ["Dungeon Mini Game"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/refs/heads/main/11468075017",
+    ["Mugen"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/refs/heads/main/11468034852",
+    ["Map 1 Public"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/refs/heads/main/17387475546",
+    ["Map 1 Private"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/refs/heads/main/13883279773",
+    ["Map 2 Public"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/refs/heads/main/17387482786",
+    ["Map 2 Private"] = "https://raw.githubusercontent.com/frites1111/hidaki-hub-2/refs/heads/main/13883059853"
+}
+
+-- Function to get the current map name (this will depend on how your game is structured)
+local function getCurrentMap()
+    -- Replace with your method of determining the current map
+    -- For example, check the map's name or a property associated with it
+    return game.Workspace.Map.Name
+end
+
+-- Load the script for the current map
+local function loadMapScript()
+    local currentMap = getCurrentMap()
+    
+    if mapScripts[currentMap] then
+        local scriptUrl = mapScripts[currentMap]
+        local scriptContent = game:HttpGet(scriptUrl)
+        loadstring(scriptContent)()
+    else
+        warn("No script found for map: " .. currentMap)
+    end
+end
+
+-- Run the function to load the correct map script
+loadMapScript()
